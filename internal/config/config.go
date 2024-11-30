@@ -7,9 +7,11 @@ import (
 )
 
 type Config struct {
-	Port       string `mapstructure:"PORT"`
-	MongoDBURL string `mapstructure:"MONGO_URI"`
-	GinMode    string `mapstructure:"GIN_MODE"`
+	Port           string `mapstructure:"PORT"`
+	MongoDBURL     string `mapstructure:"MONGO_URI"`
+	GinMode        string `mapstructure:"GIN_MODE"`
+	DBName         string `mapstructure:"DB_NAME"`
+	CollectionName string `mapstructure:"COLLECTION_NAME"`
 }
 
 var AppConfig *Config
@@ -23,6 +25,8 @@ func init() {
 	FailOnError(v.BindEnv("PORT"), "failed to bind PORT")
 	FailOnError(v.BindEnv("MONGO_URI"), "failed to bind MONGO_URI")
 	FailOnError(v.BindEnv("GIN_MODE"), "failed to bind GIN_MODE")
+	FailOnError(v.BindEnv("DB_NAME"), "failed to bind DB_NAME")
+	FailOnError(v.BindEnv("COLLECTION_NAME"), "failed to bind COLLECTION_NAME")
 	err := v.ReadInConfig()
 	if err != nil {
 		log.Println("Load from environment variable")

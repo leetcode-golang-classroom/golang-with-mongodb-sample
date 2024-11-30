@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/logger"
+	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/services/movie"
 	sloggin "github.com/samber/slog-gin"
 )
 
@@ -20,4 +21,12 @@ func (app *App) SetupRoutes(ctx context.Context) {
 		ctx.JSON(http.StatusOK, map[string]string{"message": "ok"})
 	})
 	app.Router = router
+	app.SetupNewsRoutes()
+}
+
+func (app *App) SetupNewsRoutes() {
+	movieGroups := app.Router.Group("/movies")
+	store := movie.NewStore(app.mongodbClient, app.config)
+	handler := movie.NewHandler(store)
+	handler.RegisterRoute(movieGroups)
 }
