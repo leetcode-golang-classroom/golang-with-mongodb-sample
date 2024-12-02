@@ -10,6 +10,8 @@ import (
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/application"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/config"
 	mlog "github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/logger"
+	// "github.com/newrelic/go-agent/v3/newrelic"
+	// nrgin "github.com/newrelic/go-agent/v3/integrations/nrgin"
 )
 
 func main() {

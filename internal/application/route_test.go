@@ -49,6 +49,7 @@ func (s *defaultRouteSuite) SetupSuite() {
 	url, err := c.ConnectionString(ctx)
 	require.NoError(s.T(), err)
 	config.AppConfig.MongoDBURL = url
+	config.AppConfig.Environment = "TEST"
 	app, err := application.New(config.AppConfig, ctx)
 	app.SetupRoutes(ctx)
 	require.NoError(s.T(), err)

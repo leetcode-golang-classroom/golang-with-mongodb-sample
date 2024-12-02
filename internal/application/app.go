@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/config"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/logger"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/mongodb"
+	"github.com/newrelic/go-agent/v3/newrelic"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -18,6 +20,7 @@ type App struct {
 	Router        *gin.Engine
 	config        *config.Config
 	mongodbClient *mongo.Client
+	nrApp         *newrelic.Application
 }
 
 func New(config *config.Config, ctx context.Context) (*App, error) {
@@ -26,9 +29,22 @@ func New(config *config.Config, ctx context.Context) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	var nrApp *newrelic.Application
+	if config.Environment == "PROD" {
+		nrApp, err = newrelic.NewApplication(
+			newrelic.ConfigAppName(config.AppName),
+			newrelic.ConfigLicense(config.NewRelicLicenseKey),
+			newrelic.ConfigInfoLogger(os.Stdout),
+			newrelic.ConfigAppLogForwardingEnabled(true),
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
 	app := &App{
 		config:        config,
 		mongodbClient: mongodbClient,
+		nrApp:         nrApp,
 	}
 	app.SetupRoutes(ctx)
 	return app, nil

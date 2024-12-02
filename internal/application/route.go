@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/logger"
 	"github.com/leetcode-golang-classroom/golang-with-mongodb-sample/internal/services/movie"
+	nrgin "github.com/newrelic/go-agent/v3/integrations/nrgin"
 	sloggin "github.com/samber/slog-gin"
 )
 
@@ -17,6 +18,10 @@ func (app *App) SetupRoutes(ctx context.Context) {
 	// recovery middleward
 	router.Use(sloggin.New(logger.FromContext(ctx)))
 	router.Use(gin.Recovery())
+	// setup router for new relic
+	if app.config.Environment == "PROD" {
+		router.Use(nrgin.Middleware(app.nrApp))
+	}
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, map[string]string{"message": "ok"})
 	})
